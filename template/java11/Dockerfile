@@ -1,16 +1,16 @@
-FROM openjdk:11.0.2-jdk-oraclelinux7 as builder
+FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.2.9 as builder
 
 RUN apk --no-cache add curl \
     && addgroup -S app && adduser -S -g app app \
     && mkdir -p /opt/ && cd /opt/ \
     && echo "Downloading gradle.." \
-    && curl -SfL https://services.gradle.org/distributions/gradle-4.8.1-bin.zip -o gradle-bin.zip \
+    && curl -SfL https://services.gradle.org/distributions/gradle-5.3-bin.zip -o gradle-bin.zip \
     && unzip gradle-bin.zip -d /opt/ \
     && rm gradle-bin.zip \
     && apk del curl
 
 # Export some environment variables
-ENV GRADLE_HOME=/opt/gradle-4.8.1/
+ENV GRADLE_HOME=/opt/gradle-5.3/
 ENV PATH=$PATH:$GRADLE_HOME/bin
 
 RUN mkdir -p /home/app/libs
@@ -20,9 +20,9 @@ WORKDIR /home/app
 
 COPY . /home/app/
 
-RUN gradle build
+RUN gradle build --stacktrace
 
-FROM openjdk:11.0.2-jdk-oraclelinux7 as ship
+FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.2.9 as ship
 RUN apk --no-cache add curl \
     && echo "Pulling watchdog binary from Github." \
     && curl -sSL https://github.com/openfaas-incubator/of-watchdog/releases/download/0.4.6/of-watchdog > /usr/bin/fwatchdog \
