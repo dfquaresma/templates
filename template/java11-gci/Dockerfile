@@ -43,7 +43,10 @@ USER app
 ENV upstream_url="http://127.0.0.1:8081"
 ENV mode="http"
 ENV CLASSPATH="/home/app/entrypoint-1.0/lib/*"
-ENV PATH_TO_GCI="/home/app/gci/"
+
+RUN mkdir "/home/app/gci"
+COPY gci/* /home/app/gci/
+ENV PATH_TO_GCI="/home/app/gci"
 
 ENV fprocess="java -XX:+UnlockExperimentalVMOptions -Djvmtilib=${PATH_TO_GCI}/libgc.so  -javaagent:${PATH_TO_GCI}/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
 EXPOSE 8080
