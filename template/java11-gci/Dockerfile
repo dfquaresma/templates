@@ -40,9 +40,9 @@ USER app
 ENV upstream_url="http://127.0.0.1:8081"
 ENV mode="http"
 ENV CLASSPATH="/home/app/entrypoint-1.0/lib/*"
-ENV PATH_TO_GCI_JAVA="/home/app/gci-java/"
+ENV PATH_TO_GCI="/home/app/gci/"
 
-ENV fprocess="java -XX:+UnlockExperimentalVMOptions -Djvmtilib=${PATH_TO_GCI_JAVA}/core/src/main/java/libgc.so  -javaagent:${PATH_TO_GCI_JAVA}/agent/target/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
+ENV fprocess="java -XX:+UnlockExperimentalVMOptions -Djvmtilib=${PATH_TO_GCI}/libgc.so  -javaagent:${PATH_TO_GCI}/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
