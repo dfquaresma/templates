@@ -47,6 +47,7 @@ ENV CLASSPATH="/home/app/entrypoint-1.0/lib/*"
 RUN mkdir "/home/app/gci"
 COPY gci/* /home/app/gci/
 ENV PATH_TO_GCI="/home/app/gci"
+RUN bash ${PATH_TO_GCI}/libgcso-entrypoint.sh
 
 ENV fprocess="java -XX:+UnlockExperimentalVMOptions -Djvmtilib=${PATH_TO_GCI}/libgc.so  -javaagent:${PATH_TO_GCI}/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
 EXPOSE 8080
