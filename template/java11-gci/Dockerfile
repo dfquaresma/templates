@@ -29,6 +29,9 @@ RUN apk --no-cache add curl \
     && chmod +x /usr/bin/fwatchdog \
     && apk del curl
 
+RUN apk --no-cache add build-base
+RUN apk --no-cache add bash
+
 RUN addgroup -S app && adduser -S -g app app
 WORKDIR /home/app
 COPY --from=builder /home/app/entrypoint/build/distributions/entrypoint-1.0.zip ./entrypoint-1.0.zip
