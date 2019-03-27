@@ -12,7 +12,6 @@ RUN apk --no-cache add curl \
 # Export some environment variables
 ENV GRADLE_HOME=/opt/gradle-5.3/
 ENV PATH=$PATH:$GRADLE_HOME/bin
-ENV PATH_TO_GCI_JAVA="/home/app/gci-java/"
 
 RUN mkdir -p /home/app/libs
 
@@ -41,6 +40,7 @@ USER app
 ENV upstream_url="http://127.0.0.1:8081"
 ENV mode="http"
 ENV CLASSPATH="/home/app/entrypoint-1.0/lib/*"
+ENV PATH_TO_GCI_JAVA="/home/app/gci-java/"
 
 ENV fprocess="java -XX:+UnlockExperimentalVMOptions -Djvmtilib=${PATH_TO_GCI_JAVA}/core/src/main/java/libgc.so  -javaagent:${PATH_TO_GCI_JAVA}/agent/target/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
 EXPOSE 8080
