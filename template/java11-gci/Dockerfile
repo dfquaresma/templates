@@ -54,4 +54,4 @@ EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
 
-CMD ["fwatchdog"]
+CMD ["sh","-c","fwatchdog"]
