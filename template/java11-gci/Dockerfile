@@ -31,6 +31,8 @@ RUN apk --no-cache add curl \
 
 RUN apk --no-cache add build-base
 RUN apk --no-cache add bash
+RUN apk --no-cache add musl-dev
+RUN ln -f -s /usr/lib/libc.so /lib/libc.musl-x86_64.so.1
 
 RUN addgroup -S app && adduser -S -g app app
 WORKDIR /home/app
@@ -48,8 +50,9 @@ RUN mkdir "/home/app/gci"
 COPY gci/* /home/app/gci/
 ENV PATH_TO_GCI="/home/app/gci"
 RUN bash ${PATH_TO_GCI}/libgcso-entrypoint.sh
+RUN chmod 777 /home/app/gci/libgc.so
 
-ENV fprocess="java -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -Djvmtilib=/home/app/gci/libgc.so -javaagent:/home/app/gci/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
+ENV fprocess="java -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -Djava.library.path=/home/app/gci/ -Djvmtilib=/home/app/gci/libgc.so -javaagent:/home/app/gci/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
