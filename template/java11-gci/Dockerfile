@@ -50,9 +50,8 @@ RUN mkdir "/home/app/gci"
 COPY gci/* /home/app/gci/
 ENV PATH_TO_GCI="/home/app/gci"
 RUN bash ${PATH_TO_GCI}/libgcso-entrypoint.sh
-RUN chmod 777 /home/app/gci/libgc.so
 
-ENV fprocess="java -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -Djava.library.path=/home/app/gci/ -Djvmtilib=/home/app/gci/libgc.so -javaagent:/home/app/gci/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
+ENV fprocess="java -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -Djvmtilib=/home/app/gci/libgc.so -javaagent:/home/app/gci/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
