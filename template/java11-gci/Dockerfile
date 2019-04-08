@@ -1,13 +1,13 @@
-FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.2.9 as builder
+FROM adoptopenjdk/openjdk11:jdk-11.0.2.9-slim as builder
 
-RUN apk --no-cache add curl \
-    && addgroup -S app && adduser -S -g app app \
+RUN apt-get update \
+    && apt-get install -y apt-utils curl sudo unzip \
+    && useradd -m app && echo "app:app" | chpasswd && adduser app sudo \
     && mkdir -p /opt/ && cd /opt/ \
     && echo "Downloading gradle.." \
     && curl -SfL https://services.gradle.org/distributions/gradle-5.3-bin.zip -o gradle-bin.zip \
     && unzip gradle-bin.zip -d /opt/ \
-    && rm gradle-bin.zip \
-    && apk del curl
+    && rm gradle-bin.zip
 
 # Export some environment variables
 ENV GRADLE_HOME=/opt/gradle-5.3/
@@ -22,19 +22,14 @@ COPY . /home/app/
 
 RUN gradle build --stacktrace
 
-FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.2.9 as ship
-RUN apk --no-cache add curl \
+FROM adoptopenjdk/openjdk11:jdk-11.0.2.9-slim as ship
+RUN apt-get update \
+    && apt-get install -y apt-utils curl unzip bash build-essential \
     && echo "Pulling watchdog binary from Github." \
     && curl -sSL https://github.com/openfaas-incubator/of-watchdog/releases/download/0.4.6/of-watchdog > /usr/bin/fwatchdog \
-    && chmod +x /usr/bin/fwatchdog \
-    && apk del curl
+    && chmod +x /usr/bin/fwatchdog
 
-RUN apk --no-cache add build-base
-RUN apk --no-cache add bash
-RUN apk --no-cache add musl-dev
-RUN ln -f -s /usr/lib/libc.so /lib/libc.musl-x86_64.so.1
-
-RUN addgroup -S app && adduser -S -g app app
+RUN useradd -m app && echo "app:app" | chpasswd && adduser app sudo
 WORKDIR /home/app
 COPY --from=builder /home/app/entrypoint/build/distributions/entrypoint-1.0.zip ./entrypoint-1.0.zip
 RUN unzip ./entrypoint-1.0.zip
