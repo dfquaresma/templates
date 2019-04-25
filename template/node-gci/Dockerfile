@@ -52,6 +52,7 @@ ENV YOUNG_GEN_SIZE_MB="256"
 ENV YOUNG_GEN_SIZE_B="256000000"
 ENV EXPRESS_PORT="8083"
 ENV PROXY_PORT="8082"
+ENV GCI="true"
 ENV upstream_url="http://127.0.0.1:${PROXY_PORT}"
 ENV fprocess="node --expose-gc --nouse_idle_notification --noconcurrent_sweeping --semi_space_growth_factor=0 --min_semi_space_size=${YOUNG_GEN_SIZE_MB} --max_semi_space_size=${YOUNG_GEN_SIZE_MB} index.js"
 EXPOSE 8080
