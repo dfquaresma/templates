@@ -7,14 +7,9 @@
 const handler = require('./function/handler');
 const express = require('express');
 const app = express();
+const gci = require('./gcinterceptor');
 
-const GCI = process.env.GCI
-console.log("GCI: " + GCI)
-if (GCI == "false") {
-    const gci = require('./gcinterceptor');
-    app.get('/__gci', gci);
-}
-
+app.get('/__gci', gci);
 app.get('/', function (req, res) {res.send(handler(req))});
 
 const PORT = process.env.EXPRESS_PORT || 8082;
