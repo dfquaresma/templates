@@ -11,7 +11,6 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/__gci", gci)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		body, err := function.Handle(*r)
 		if err != nil {

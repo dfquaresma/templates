@@ -33,20 +33,17 @@ WORKDIR /home/app
 COPY --from=builder /usr/bin/fwatchdog         .
 COPY --from=builder /go/src/handler/function/  .
 COPY --from=builder /go/src/handler/handler    .
-COPY --from=builder /go/src/handler/gci-proxy  .
 
 RUN chown -R app /home/app
 
 USER app
 
 ENV mode="http"
-ENV YOUNG_GEN_SIZE_B="256000000"
-ENV HANDLER_PORT="8083"
-ENV PROXY_PORT="8082"
-ENV upstream_url="http://127.0.0.1:${PROXY_PORT}"
+ENV HANDLER_PORT="8082"
+ENV upstream_url="http://127.0.0.1:${HANDLER_PORT}"
 ENV fprocess="./handler"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
 
-CMD ["sh","-c","nohup ./gci-proxy --port=${PROXY_PORT} --target=127.0.0.1:${HANDLER_PORT} --gci_target=127.0.0.1:${HANDLER_PORT} --gci_path=__gci --ygen=${YOUNG_GEN_SIZE_B} > /tmp/log & ./fwatchdog"]
+CMD ["./fwatchdog"]
