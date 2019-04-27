@@ -8,9 +8,9 @@ const handler = require('./function/handler');
 const express = require('express');
 const app = express();
 
-const GCI = JSON.parse(process.env.GCI)
-console.log(GCI)
-if (GCI) {
+const GCI = process.env.GCI
+console.log("GCI: " + GCI)
+if (GCI == "false") {
     const gci = require('./gcinterceptor');
     app.get('/__gci', gci);
 }
